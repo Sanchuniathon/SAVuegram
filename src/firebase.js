@@ -4,13 +4,13 @@ import 'firebase/firestore'
 
 // firebase init
 const firebaseConfig = {
-  apiKey: '',
-  authDomain: '',
-  databaseURL: '',
-  projectId: '',
-  storageBucket: '',
-  messagingSenderId: '',
-  appId: ''
+  apiKey: "AIzaSyCTXsyn1E4n5vYkNkTwOVDfXTSByWGfzxA",
+  authDomain: "conquesttiles.firebaseapp.com",
+  projectId: "conquesttiles",
+  storageBucket: "conquesttiles.appspot.com",
+  messagingSenderId: "349921176545",
+  appId: "1:349921176545:web:6c3db9558780652f6980a0",
+  measurementId: "G-C4QLF4V4L2"
 }
 firebase.initializeApp(firebaseConfig)
 
