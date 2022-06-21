@@ -31,7 +31,12 @@ export default {
   },
   computed: {
     infoMessage: function(){
-      return "activeGame.squares"
+      if(this.activeGame.inProgress){
+        return 'It is ' + this.activeGame.currentTurn + '\'s turn';
+      }
+      else{
+        return this.activeGame.movesMade;
+      }
     }
   }
 }
