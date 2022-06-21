@@ -3,7 +3,7 @@
     <section>
       <div class="col1">
         <router-link to="/">
-          <h3>Vuegram</h3>
+          <h3>Combat Tiles</h3>
         </router-link>
         <ul class="inline">
           <li>
