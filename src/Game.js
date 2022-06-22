@@ -12,13 +12,14 @@ export default class Game {
         this.movesMade = 0;
         this.selectedSquareIndex = null;
         this.squares = new Array(18).fill().map( s=> new Square() );
-        this.squares[0].value='X';
-        this.squares[1].value='X';
-        this.squares[2].value='X';
-        this.squares[15].value='O';
-        this.squares[16].value='O';
-        this.squares[17].value='O';
+        
 
+        this.squares[0].value= new Pawn(0,'X',2).team;
+        this.squares[1].value= new Pawn(1,'X',2).team;
+        this.squares[2].value= new Pawn(2,'X',2).team;
+        this.squares[15].value= new Pawn(3,'O',2).team;
+        this.squares[16].value= new Pawn(4,'O',2).team;
+        this.squares[17].value= new Pawn(5,'O',2).team;
 
     }
 
@@ -42,7 +43,7 @@ export default class Game {
             this.checkForValidSelection(i);
         } 
         else if(this.inProgress && this.selectionMade){
-            if(this.checkForValidMove(i) == true){
+            if(this.checkForValidMove(i)){
                 this.squares[i].value = this.currentTurn;
                 this.squares[this.selectedSquareIndex].value = null;
                 //attackSound.play();
