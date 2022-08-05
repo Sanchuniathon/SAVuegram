@@ -10,7 +10,7 @@
             v-on:click="activeGame.makeMove(i)"
             v-bind:class="{highlighted: square.isHighlighted}"
             class="game-view-square">
-            {{square.value}}
+            {{square.value.team + square.value.health}}
             
           </div>
         </div>

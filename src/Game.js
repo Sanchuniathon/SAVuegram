@@ -14,17 +14,17 @@ export default class Game {
         this.squares = new Array(18).fill().map( s=> new Square() );
         
 
-        this.squares[0].value= new Pawn(0,'X',2).team;
-        this.squares[1].value= new Pawn(1,'X',2).team;
-        this.squares[2].value= new Pawn(2,'X',2).team;
-        this.squares[15].value= new Pawn(3,'O',2).team;
-        this.squares[16].value= new Pawn(4,'O',2).team;
-        this.squares[17].value= new Pawn(5,'O',2).team;
+        this.squares[0].value= new Pawn(0,'X',2);
+        this.squares[1].value= new Pawn(1,'X',2);
+        this.squares[2].value= new Pawn(2,'X',2);
+        this.squares[15].value= new Pawn(3,'O',2);
+        this.squares[16].value= new Pawn(4,'O',2);
+        this.squares[17].value= new Pawn(5,'O',2);
 
     }
 
     checkForValidSelection(i){
-        if(this.squares[i].value == this.currentTurn){
+        if(this.squares[i].value.team == this.currentTurn){
             this.selectedSquareIndex = i;
             this.selectionMade=true;
         }
@@ -33,7 +33,7 @@ export default class Game {
         //first we block deployment row
         if((i>2) && (i<15)){
             //Can't go into an occupied square
-            if(this.squares[i].value == null){
+            if(this.squares[i].value.team == ""){
                 //Can only move one space at a time
                 var checkLocation = Math.abs(this.selectedSquareIndex - i);
                 if((checkLocation==3)||(checkLocation==1)){
@@ -44,7 +44,7 @@ export default class Game {
         return false;
     }
     checkForAttack(i){
-        if((this.squares[i].value != this.currentTurn)&&(this.squares[i].value != null)){
+        if((this.squares[i].value.team != this.currentTurn)&&(this.squares[i].value.team != "")){
             //Can only shoot one space at a time
             var checkLocation = Math.abs(this.selectedSquareIndex - i);
             if((checkLocation==3)||(checkLocation==1)){
@@ -68,8 +68,8 @@ export default class Game {
         else if(this.inProgress && this.selectionMade){
             if(this.checkForValidMove(i)){
                 //move normally
-                this.squares[i].value = this.currentTurn;
-                this.squares[this.selectedSquareIndex].value = null;
+                this.squares[i].value = this.squares[this.selectedSquareIndex].value;//this.currentTurn;
+                this.squares[this.selectedSquareIndex].value = new Pawn("","","");
                 this.completeTurn();
             }
             //We can't move there but maybe we can attack there
