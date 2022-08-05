@@ -14,6 +14,7 @@
             
           </div>
         </div>
+        <button id="end-turn-button" @click="activeGame.completeTurn()">End Turn</button>       
       </div>
     </section>
 </template>

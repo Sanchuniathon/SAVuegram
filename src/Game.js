@@ -53,6 +53,26 @@ export default class Game {
         }
         return false;
     }
+    resolveAttack(i){
+        var accuracy = this.squares[this.selectedSquareIndex].value.accuracy
+        var strikeValue = Math.floor(Math.random() * 101);
+        var scale = 100;
+        if(scale*accuracy>= strikeValue){
+            //hit
+            if(this.squares[i].value.health >= 2){
+                this.squares[i].value.health = this.squares[i].value.health - 1;
+            }else{
+                //the enemy is slain
+                this.squares[i].value = new Pawn("","","");
+            }
+            
+
+        }else{
+            //miss, nothing happens
+        }
+
+
+    }
     completeTurn(){   
         this.movesMade++;
         this.checkForWinner();
@@ -75,6 +95,7 @@ export default class Game {
             //We can't move there but maybe we can attack there
             else if(this.checkForAttack(i)){
                 attackSound.play();
+                this.resolveAttack(i);
                 this.completeTurn();
             }
             //move is not valid
