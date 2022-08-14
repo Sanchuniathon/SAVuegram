@@ -5,6 +5,7 @@ var attackSound = new Audio(Cannon)
 export default class Game {
     constructor() {
         this.inProgress = true;
+        this.turnOver = false;
         this.selectionMade = false;
         this.playerTeam = Game.O;
         this.winner = null;
@@ -24,7 +25,7 @@ export default class Game {
     }
 
     checkForValidSelection(i){
-        if(this.squares[i].value.team == this.currentTurn){
+        if((this.squares[i].value.team == this.currentTurn) && (!this.turnOver)){
             this.selectedSquareIndex = i;
             this.selectionMade=true;
         }
@@ -75,6 +76,7 @@ export default class Game {
     }
     completeTurn(){   
         this.movesMade++;
+        this.turnOver=false;
         this.checkForWinner();
         this.currentTurn = (this.currentTurn === Game.O) ? Game.X : Game.O; //if it is O's turn set to X's turn, otherwise set it to O's turn
     }
@@ -90,13 +92,15 @@ export default class Game {
                 //move normally
                 this.squares[i].value = this.squares[this.selectedSquareIndex].value;//this.currentTurn;
                 this.squares[this.selectedSquareIndex].value = new Pawn("","","");
-                this.completeTurn();
+                this.turnOver = true;
+                //this.completeTurn();
             }
             //We can't move there but maybe we can attack there
             else if(this.checkForAttack(i)){
                 attackSound.play();
                 this.resolveAttack(i);
-                this.completeTurn();
+                this.turnOver = true;
+                //this.completeTurn();
             }
             //move is not valid
             else{
