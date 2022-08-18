@@ -12,7 +12,7 @@ export default class Game {
         this.currentTurn = Game.O;
         this.movesMade = 0;
         this.selectedSquareIndex = null;
-        this.squares = new Array(18).fill().map( s=> new Square() );
+        this.squares = new Array(54).fill().map( s=> new Square() );
         
 
         this.squares[0].value= new Pawn(0,'X',2);

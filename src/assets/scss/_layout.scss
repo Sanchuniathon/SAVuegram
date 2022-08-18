@@ -232,14 +232,14 @@ header {
   height: 800px;
   display: flex;
   flex-wrap: wrap;
-  padding: 25px;
+  padding: 5px;
   box-sizing: border-box;
   background-color: rgb(138, 248, 138);
 }
 
 .game-view-square{
-  width: 33.33%;
-  height: 16%;
+  width: 11.11111%;
+  height: 16.66666%;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -249,16 +249,32 @@ header {
   font-size: 75px;
   text-transform: uppercase;
 
-  border-style: dotted;
-  border: 5px;
+  
   margin: auto;
   cursor: pointer;
   user-select: none;
   -moz-user-select: none;
 }
 
-.game-view-square.highlighted{ color: green}
+.game-view-square.highlighted{ background-color: green}
 .game-view-square:hover {background-color: rgb(236, 234, 204)}
+
+.game-view-square.left_edge{
+  border-top: thin solid black;
+  border-left: thin solid black;
+  border-bottom: thin solid black;
+}
+
+.game-view-square.centre_block{
+  border-top: thin solid black;
+  border-bottom: thin solid black;
+}
+
+.game-view-square.right_edge{
+  border-top: thin solid black;
+  border-right: thin solid black;
+  border-bottom: thin solid black;
+}
 
 #end-turn-button{
   background-color: #fbeee0;
