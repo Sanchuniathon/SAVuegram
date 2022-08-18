@@ -15,12 +15,12 @@ export default class Game {
         this.squares = new Array(54).fill().map( s=> new Square() );
         
 
-        this.squares[0].value= new Pawn(0,'X',2);
-        this.squares[1].value= new Pawn(1,'X',2);
-        this.squares[2].value= new Pawn(2,'X',2);
-        this.squares[15].value= new Pawn(3,'O',2);
-        this.squares[16].value= new Pawn(4,'O',2);
-        this.squares[17].value= new Pawn(5,'O',2);
+        this.squares[1].value= new Pawn(0,'X',2);
+        this.squares[4].value= new Pawn(1,'X',2);
+        this.squares[7].value= new Pawn(2,'X',2);
+        this.squares[46].value= new Pawn(3,'O',2);
+        this.squares[49].value= new Pawn(4,'O',2);
+        this.squares[52].value= new Pawn(5,'O',2);
 
     }
 
