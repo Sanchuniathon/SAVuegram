@@ -29,6 +29,7 @@ export default class Game {
         if((this.squares[i].value.team == this.currentTurn) && (!this.turnOver)){
             this.selectedSquareIndex = i;
             this.selectionMade=true;
+            this.squares[i].isSelected=true;
         }
     }
     getPositionInFundamentalBlock(currentPosition, i){
@@ -133,6 +134,7 @@ export default class Game {
         this.turnOver=false;
         this.checkForWinner();
         this.currentTurn = (this.currentTurn === Game.O) ? Game.X : Game.O; //if it is O's turn set to X's turn, otherwise set it to O's turn
+
     }
 
     makeMove(i){
@@ -146,6 +148,9 @@ export default class Game {
                 //move normally
                 this.squares[i].value = this.squares[this.selectedSquareIndex].value;//this.currentTurn;
                 this.squares[this.selectedSquareIndex].value = new Pawn("","","");
+                this.squares.forEach(element => {
+                    element.isSelected = false;
+                });
                 this.turnOver = true;
                 //this.completeTurn();
             }
@@ -153,14 +158,21 @@ export default class Game {
             else if(this.checkForAttack(i)){
                 attackSound.play();
                 this.resolveAttack(i);
+                this.squares.forEach(element => {
+                    element.isSelected = false;
+                });
                 this.turnOver = true;
                 //this.completeTurn();
             }
             //move is not valid
             else{
                 this.selectedSquareIndex = null;
+                this.squares.forEach(element => {
+                    element.isSelected = false;
+                });
             }
             this.selectionMade = false;
+            this.squares[i].isSelected=false;
 
         }
     }

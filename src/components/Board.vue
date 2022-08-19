@@ -8,7 +8,7 @@
           <div 
             v-for="(square, i) in activeGame.squares" :key="game-view-square.id"
             v-on:click="activeGame.makeMove(i)"
-            v-bind:class="{highlighted: square.isHighlighted, left_edge: i % 3==0, centre_block: (i-1) % 3 ==0, right_edge: (i-2)%3==0}"
+            v-bind:class="{highlighted: square.isHighlighted, selection: square.isSelected, left_edge: i % 3==0, centre_block: (i-1) % 3 ==0, right_edge: (i-2)%3==0}"
             class="game-view-square">
             {{square.value.team + square.value.health}}
             

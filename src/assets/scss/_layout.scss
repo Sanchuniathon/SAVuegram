@@ -258,7 +258,7 @@ header {
 
 .game-view-square.highlighted{ background-color: green}
 .game-view-square:hover {background-color: rgb(236, 234, 204)}
-
+.game-view-square.selection{background-color: white;}
 .game-view-square.left_edge{
   border-top: thin solid black;
   border-left: thin solid black;
