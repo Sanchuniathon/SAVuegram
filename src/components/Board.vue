@@ -2,7 +2,7 @@
     <section>
       <div id="game-view">
         <div id="game-view-info">
-          {{ infoMessage }}
+          {{ turnStatus }}
         </div>
         <div id="game-view-squares">
           <div 
@@ -31,12 +31,12 @@ export default {
     }
   },
   computed: {
-    infoMessage: function(){
-      if(this.activeGame.inProgress){
-        return 'It is ' + this.activeGame.currentTurn + '\'s turn';
+    turnStatus: function(){
+      if(this.activeGame.turnOver){
+        return 'Your turn is over';
       }
       else{
-        return this.activeGame.movesMade;
+        return 'It is your turn';
       }
     }
   }
