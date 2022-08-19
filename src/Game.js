@@ -45,12 +45,12 @@ export default class Game {
     isFundamentalSquareAvailable(i){
         var refinedPosition = this.getPositionInFundamentalBlock(i, 0); //zero
         if(refinedPosition == 'left'){           
-            for (let x = i; x < (i+2); x++) {
+            for (let x = i; x < (i+3); x++) {
                 if(this.squares[x].value.team != "")
                     return false;
             }
         }else if (refinedPosition == 'right'){
-            for (let x = (i-2); x < i; x++) {
+            for (let x = (i-3); x < i; x++) {
                 if(this.squares[x].value.team != "")
                     return false;
             }
