@@ -33,10 +33,10 @@ export default {
   computed: {
     turnStatus: function(){
       if(this.activeGame.turnOver){
-        return 'Your turn is over';
+        return 'The turn is over';
       }
       else{
-        return 'It is your turn';
+        return 'It is ' + this.activeGame.currentTurn +'\'s turn';
       }
     }
   }

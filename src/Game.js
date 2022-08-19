@@ -10,6 +10,7 @@ export default class Game {
         this.playerTeam = Game.O;
         this.winner = null;
         this.currentTurn = Game.O;
+        this.attacks = 1;
         this.movesMade = 0;
         this.selectedSquareIndex = null;
         this.squares = new Array(54).fill().map( s=> new Square() );
@@ -63,7 +64,23 @@ export default class Game {
         }
         return true;
     }
-
+    isSquareAdjacent(selectedSquareIndex, i){
+        var checkLocation = Math.abs(selectedSquareIndex - i);
+        //Can't move within the same square
+        var refinedPosition = this.getPositionInFundamentalBlock(selectedSquareIndex, i);
+        if(refinedPosition == 'left'){
+            checkLocation++;
+        }else if (refinedPosition == 'right'){
+            checkLocation--;
+        }//no position adjustment for centre
+        
+        var validRelativeLocations = [-10,-9,-8,-4,-3,-2,2,3,4,8,9,10];
+        if(validRelativeLocations.includes(checkLocation)){
+            return true;     
+        }else{
+            return false;
+        }
+    }
     checkForValidMove(i){
         //first we block deployment row
         if((i>8) && (i<45)){
@@ -72,30 +89,24 @@ export default class Game {
                 //Can only move one space at a time
                 var checkLocation = Math.abs(this.selectedSquareIndex - i);
                 //Can't move within the same square
-                var refinedPosition = this.getPositionInFundamentalBlock(this.selectedSquareIndex, i);
-                if(refinedPosition == 'left'){
-                    checkLocation++;
-                }else if (refinedPosition == 'right'){
-                    checkLocation--;
-                }//no position adjustment for centre
-                
-                var validRelativeLocations = [-10,-9,-8,-4,-3,-2,2,3,4,8,9,10];
-                if(validRelativeLocations.includes(checkLocation)){
-                    return true;     
-                }                        
+                if(this.isSquareAdjacent(this.selectedSquareIndex,i)){
+                    return true;
+                }                      
             }           
         }
         return false;
     }
     checkForAttack(i){
-        if((this.squares[i].value.team != this.currentTurn)&&(this.squares[i].value.team != "")){
-            //Can only shoot one space at a time
-            var checkLocation = Math.abs(this.selectedSquareIndex - i);
-            if((checkLocation==3)||(checkLocation==1)){
+        //Can only shoot one space at a time
+        if(this.isSquareAdjacent(this.selectedSquareIndex,i)){
+            if((this.squares[i].value.team != this.currentTurn)&&(this.squares[i].value.team != "")){              
                 return true;     
             }
+        }else{
+
+            return false;
         }
-        return false;
+
     }
     resolveAttack(i){
         var accuracy = this.squares[this.selectedSquareIndex].value.accuracy
