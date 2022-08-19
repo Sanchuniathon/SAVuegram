@@ -30,14 +30,57 @@ export default class Game {
             this.selectionMade=true;
         }
     }
+    getPositionInFundamentalBlock(currentPosition, i){
+        if(currentPosition%3==0){
+            //left
+            return 'left';
+        }else if((currentPosition-1)%3==0){
+            //centre
+            return 'centre';
+        }else{
+            //right
+            return 'right';
+        }
+    }
+    isFundamentalSquareAvailable(i){
+        var refinedPosition = this.getPositionInFundamentalBlock(i, 0); //zero
+        if(refinedPosition == 'left'){           
+            for (let x = i; x < (i+2); x++) {
+                if(this.squares[x].value.team != "")
+                    return false;
+            }
+        }else if (refinedPosition == 'right'){
+            for (let x = (i-2); x < i; x++) {
+                if(this.squares[x].value.team != "")
+                    return false;
+            }
+        }else{
+            //centre
+            for (let x = (i-1); x < i+1; x++) {
+                if(this.squares[x].value.team != "")
+                    return false;
+            }
+        }
+        return true;
+    }
+
     checkForValidMove(i){
         //first we block deployment row
-        if((i>2) && (i<15)){
+        if((i>8) && (i<45)){
             //Can't go into an occupied square
-            if(this.squares[i].value.team == ""){
+            if(this.isFundamentalSquareAvailable(i)){
                 //Can only move one space at a time
                 var checkLocation = Math.abs(this.selectedSquareIndex - i);
-                if((checkLocation==3)||(checkLocation==1)){
+                //Can't move within the same square
+                var refinedPosition = this.getPositionInFundamentalBlock(this.selectedSquareIndex, i);
+                if(refinedPosition == 'left'){
+                    checkLocation++;
+                }else if (refinedPosition == 'right'){
+                    checkLocation--;
+                }//no position adjustment for centre
+                
+                var validRelativeLocations = [-10,-9,-8,-4,-3,-2,2,3,4,8,9,10];
+                if(validRelativeLocations.includes(checkLocation)){
                     return true;     
                 }                        
             }           
