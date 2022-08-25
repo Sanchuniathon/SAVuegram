@@ -306,6 +306,10 @@ header {
   transform: translate(2px, 2px);
 }
 
+#end-turn-button:disabled{
+  background-color: #b4722b;
+}
+
 @media (min-width: 768px) {
   #end-turn-button {
     min-width: 120px;

@@ -5,6 +5,7 @@ var attackSound = new Audio(Cannon)
 export default class Game {
     constructor() {
         this.inProgress = true;
+        this.canEndTurn = true;
         this.turnOver = false;
         this.selectionMade = false;
         this.playerTeam = Game.O;
@@ -14,6 +15,7 @@ export default class Game {
         this.movesMade = 0;
         this.selectedSquareIndex = null;
         this.squares = new Array(54).fill().map( s=> new Square() );
+
         
 
         this.squares[1].value= new Pawn(0,'X',2);
@@ -134,6 +136,9 @@ export default class Game {
         }
 
     }
+    sleepFunction(ms) {
+        return new Promise(resolve => setTimeout(resolve, ms));
+    }
     resolveAttack(i){
         var accuracy = this.squares[this.selectedSquareIndex].value.accuracy
         var strikeValue = Math.floor(Math.random() * 101);
@@ -151,6 +156,9 @@ export default class Game {
         }else{
             //miss, nothing happens
         }
+
+        this.canEndTurn=false;  
+        this.sleepFunction(1000).then(() => { this.canEndTurn = true });
 
 
     }
