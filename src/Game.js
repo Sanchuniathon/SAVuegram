@@ -44,29 +44,54 @@ export default class Game {
             return 'right';
         }
     }
-    isFundamentalSquareAvailable(i){
+    isFundamentalSquareAvailable(i, selectedSquare){
         var refinedPosition = this.getPositionInFundamentalBlock(i, 0); //zero
+        let movingTeam = this.squares[selectedSquare].value.team;
         if(refinedPosition == 'left'){           
             for (let x = i; x < (i+3); x++) {
-                if(this.squares[x].value.team != "")
+                if((this.squares[x].value.team==movingTeam) && (this.squares[i].value.team=="")){
+                    //we found a friendly in the fundamental square and we have an opening to move into the chosen refined spot
+                    return true;
+                }
+                else if((this.squares[x].value.team!=movingTeam) && (this.squares[x].value.team!="")){
+                    //it is an enemy, we can't go there
                     return false;
+                }           
             }
-        }else if (refinedPosition == 'right'){
-            for (let x = (i-3); x < i; x++) {
-                if(this.squares[x].value.team != "")
+        }else if (refinedPosition == 'right'){              
+            for (let x = (i-2); x <= i; x++) {              
+                if((this.squares[x].value.team==movingTeam) && (this.squares[i].value.team=="")){
+                    //we found a friendly in the fundamental square and we have an opening to move into the chosen refined spot
+                    return true;
+                }
+                else if((this.squares[x].value.team!=movingTeam) && (this.squares[x].value.team!="")){
+                    //it is an enemy, we can't go there
                     return false;
+                }   
             }
         }else{
             //centre
-            for (let x = (i-1); x < i+1; x++) {
-                if(this.squares[x].value.team != "")
+            for (let x = (i-1); x <= i+1; x++) {   
+                if((this.squares[x].value.team==movingTeam) && (this.squares[i].value.team=="")){
+                    //we found a friendly in the fundamental square and we have an opening to move into the chosen refined spot
+                    return true;
+                }
+                else if((this.squares[x].value.team!=movingTeam) && (this.squares[x].value.team!="")){
+                    //it is an enemy, we can't go there
                     return false;
+                }   
             }
         }
-        return true;
+        if(this.squares[i].value.team==""){
+            return true;
+        }
+        else{
+            return false;
+        }
+
     }
     isSquareAdjacent(selectedSquareIndex, i){
-        var checkLocation = Math.abs(selectedSquareIndex - i);
+        var checkLocation = (selectedSquareIndex - i);
         //Can't move within the same square
         var refinedPosition = this.getPositionInFundamentalBlock(selectedSquareIndex, i);
         if(refinedPosition == 'left'){
@@ -86,7 +111,7 @@ export default class Game {
         //first we block deployment row
         if((i>8) && (i<45)){
             //Can't go into an occupied square
-            if(this.isFundamentalSquareAvailable(i)){
+            if(this.isFundamentalSquareAvailable(i,this.selectedSquareIndex)){
                 //Can only move one space at a time
                 var checkLocation = Math.abs(this.selectedSquareIndex - i);
                 //Can't move within the same square
