@@ -5,5 +5,6 @@ export default class Pawn{
         this.health = health;
         this.accuracy = .5;
         this.isHighlighted = false;
+        this.hasPlayedThisTurn = false;
     }
 }

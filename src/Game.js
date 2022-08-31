@@ -28,7 +28,7 @@ export default class Game {
     }
 
     checkForValidSelection(i){
-        if((this.squares[i].value.team == this.currentTurn) && (!this.turnOver)){
+        if((this.squares[i].value.team == this.currentTurn) && (!this.turnOver) && (this.squares[i].value.hasPlayedThisTurn==false)){
             this.selectedSquareIndex = i;
             this.selectionMade=true;
             this.squares[i].isSelected=true;
@@ -167,6 +167,9 @@ export default class Game {
         this.turnOver=false;
         this.checkForWinner();
         this.currentTurn = (this.currentTurn === Game.O) ? Game.X : Game.O; //if it is O's turn set to X's turn, otherwise set it to O's turn
+        this.squares.forEach(element => {
+            element.value.hasPlayedThisTurn = false;
+        });
 
     }
 
@@ -177,15 +180,18 @@ export default class Game {
         }
         //If there is already a selection made then we can try to make a move or attack
         else if(this.inProgress && this.selectionMade){
-            if(this.checkForValidMove(i)){
+            if(this.squares[i].value.team==this.currentTurn){
+                this.checkForValidSelection(i)
+            }
+            else if(this.checkForValidMove(i)){
                 //move normally
-                this.squares[i].value = this.squares[this.selectedSquareIndex].value;//this.currentTurn;
+                this.squares[i].value = this.squares[this.selectedSquareIndex].value;
                 this.squares[this.selectedSquareIndex].value = new Pawn("","","");
+                this.squares[i].value.hasPlayedThisTurn = true;
                 this.squares.forEach(element => {
                     element.isSelected = false;
                 });
-                this.turnOver = true;
-                //this.completeTurn();
+                //this.turnOver = true;
             }
             //We can't move there but maybe we can attack there
             else if(this.checkForAttack(i)){
@@ -194,8 +200,8 @@ export default class Game {
                 this.squares.forEach(element => {
                     element.isSelected = false;
                 });
-                this.turnOver = true;
-                //this.completeTurn();
+                this.squares[this.selectedSquareIndex].value.hasPlayedThisTurn = true;
+                //this.turnOver = true;
             }
             //move is not valid
             else{
