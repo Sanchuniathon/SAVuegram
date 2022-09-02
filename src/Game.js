@@ -2,6 +2,9 @@ import Square from './Square'
 import Pawn from './Pawn';
 import Cannon from './Cannon.mp3'
 var attackSound = new Audio(Cannon)
+//fundamental gridblock - The larger squares that each contain 3 refined blocks
+//refined gridblock - the smaller blocks within each fundamental block
+//Game initialization
 export default class Game {
     constructor() {
         this.inProgress = true;
@@ -27,6 +30,7 @@ export default class Game {
 
     }
 
+    //i is the index of the target withing the game grid
     checkForValidSelection(i){
         if((this.squares[i].value.team == this.currentTurn) && (!this.turnOver) && (this.squares[i].value.hasPlayedThisTurn==false)){
             this.selectedSquareIndex = i;
@@ -34,7 +38,9 @@ export default class Game {
             this.squares[i].isSelected=true;
         }
     }
-    getPositionInFundamentalBlock(currentPosition, i){
+    //currentPosition is the index of the position that the character is currently in within the game grid
+    //returns a string indicating which position that character is in within their fundamenmtal square
+    getPositionInFundamentalBlock(currentPosition){
         if(currentPosition%3==0){
             //left
             return 'left';
@@ -46,9 +52,10 @@ export default class Game {
             return 'right';
         }
     }
-    isFundamentalSquareAvailable(i, selectedSquare){
+    //This method uses a selected square (selectedSquare) and a destination choice (i) and returns true if the character can move there
+    isFundamentalSquareAvailable(i, selectedSquareIndex){
         var refinedPosition = this.getPositionInFundamentalBlock(i, 0); //zero
-        let movingTeam = this.squares[selectedSquare].value.team;
+        let movingTeam = this.squares[selectedSquareIndex].value.team;
         if(refinedPosition == 'left'){           
             for (let x = i; x < (i+3); x++) {
                 if((this.squares[x].value.team==movingTeam) && (this.squares[i].value.team=="")){
@@ -92,6 +99,7 @@ export default class Game {
         }
 
     }
+    //This method returns true if the destination (i) is one fundamental block away from the selected character(s) position (selectedSquareIndex) not counting diagonals
     isSquareAdjacent(selectedSquareIndex, i){
         var checkLocation = (selectedSquareIndex - i);
         //Can't move within the same square
@@ -109,13 +117,14 @@ export default class Game {
             return false;
         }
     }
+    //This method returns true if the target square (i) is valid to move into by checking that the sqaure is not in the deployment
+    //row, that the square is adjacent, and that the square is neutral or under team control
     checkForValidMove(i){
         //first we block deployment row
         if((i>8) && (i<45)){
             //Can't go into an occupied square
             if(this.isFundamentalSquareAvailable(i,this.selectedSquareIndex)){
                 //Can only move one space at a time
-                var checkLocation = Math.abs(this.selectedSquareIndex - i);
                 //Can't move within the same square
                 if(this.isSquareAdjacent(this.selectedSquareIndex,i)){
                     return true;
@@ -124,26 +133,29 @@ export default class Game {
         }
         return false;
     }
-    checkForAttack(i){
+    //This method returns true if the selected character can attack an enemy occupied adjacent fundamental square
+    checkForAttack(selectedSquareIndex,i){
         //Can only shoot one space at a time
-        if(this.isSquareAdjacent(this.selectedSquareIndex,i)){
+        if(this.isSquareAdjacent(selectedSquareIndex,i)){
             if((this.squares[i].value.team != this.currentTurn)&&(this.squares[i].value.team != "")){              
                 return true;     
             }
         }else{
-
             return false;
         }
 
     }
+    //simple sleep funtion. Asynchronous.
     sleepFunction(ms) {
         return new Promise(resolve => setTimeout(resolve, ms));
     }
+
+    //this method is for handling all of the effects of an attack on square (i)
     resolveAttack(i){
         var accuracy = this.squares[this.selectedSquareIndex].value.accuracy
         var strikeValue = Math.floor(Math.random() * 101);
         var scale = 100;
-        if(scale*accuracy>= strikeValue){
+        if(scale*accuracy>=strikeValue){
             //hit
             if(this.squares[i].value.health >= 2){
                 this.squares[i].value.health = this.squares[i].value.health - 1;
@@ -157,11 +169,14 @@ export default class Game {
             //miss, nothing happens
         }
 
+        //short sleep on the end turn button, needs work and a broader implementation
         this.canEndTurn=false;  
         this.sleepFunction(1000).then(() => { this.canEndTurn = true });
 
 
     }
+
+    //method is directly connected in Vue with the end turn button. This handles all of the resetting and cleanup at the end of a turn
     completeTurn(){   
         this.movesMade++;
         this.turnOver=false;
@@ -173,6 +188,7 @@ export default class Game {
 
     }
 
+    //Core game engine method handling almost every in grid action
     makeMove(i){
         //we don't have a tile selected
         if(this.inProgress && !this.selectionMade){
@@ -194,7 +210,7 @@ export default class Game {
                 //this.turnOver = true;
             }
             //We can't move there but maybe we can attack there
-            else if(this.checkForAttack(i)){
+            else if(this.checkForAttack(this.selectedSquareIndex,i)){
                 attackSound.play();
                 this.resolveAttack(i);
                 this.squares.forEach(element => {

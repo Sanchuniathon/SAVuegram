@@ -276,7 +276,9 @@ header {
   border-right: thin solid black;
   border-bottom: thin solid black;
 }
-
+.game-view-square.deploymentRow{
+  background-color: brown;
+}
 #end-turn-button{
   background-color: #fbeee0;
   border: 2px solid #422800;
