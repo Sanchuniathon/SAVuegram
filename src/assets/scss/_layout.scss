@@ -234,7 +234,8 @@ header {
   flex-wrap: wrap;
   padding: 5px;
   box-sizing: border-box;
-  background-color: rgb(138, 248, 138);
+  //background-color: rgb(138, 248, 138);
+  background-image: url('..\\Images\\Grass.jpg');
 }
 
 .game-view-square{
@@ -258,7 +259,7 @@ header {
 
 .game-view-square.highlighted{ background-color: green}
 .game-view-square:hover {background-color: rgb(236, 234, 204)}
-.game-view-square.selection{background-color: white;}
+.game-view-square.selection{background-color: white;filter:sepia(100%);}
 
 .game-view-square.left_edge{
   border-top: thin solid black;
@@ -277,8 +278,10 @@ header {
   border-bottom: thin solid black;
 }
 .game-view-square.deploymentRow{
-  background-color: brown;
+  background-image: url('..\\Images\\Dirt.jpg');
 }
+.game-view-square.deploymentRow:hover{filter:brightness(50%);}
+
 #end-turn-button{
   background-color: #fbeee0;
   border: 2px solid #422800;
