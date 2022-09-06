@@ -26,7 +26,9 @@ export default class Game {
         this.squares[1].value= new Pawn(0,'X',2);
         this.squares[4].value= new Pawn(1,'X',2);
         this.squares[7].value= new Pawn(2,'X',2);
+        this.squares[45].value= new Pawn(3,'O',2);
         this.squares[46].value= new Pawn(3,'O',2);
+        this.squares[47].value= new Pawn(3,'O',2);
         this.squares[49].value= new Pawn(4,'O',2);
         this.squares[52].value= new Pawn(5,'O',2);
 
@@ -245,15 +247,34 @@ export default class Game {
             else if(this.checkForValidMove(i)){
                 //move normally
                 var position = this.getPositionInFundamentalBlock(i);
-                var fullArray = [0,0,0];
+                var filled= 0;
+                var temp = i;
+                var aligned = false;
+                console.log("temp:" + temp);
                 var validOptions = this.checkForValidMoveWithValidIndexes(i);
-                //this.makeValidMovement(this.selectedSquareIndex,i);
                 for (let x = 0; x < this.squares.length; x++) {
-                    if((validOptions.includes(x))){
-                        console.log(x);
-                        this.makeValidMovement(x, i);
+                    if((validOptions.includes(x)&&(filled<3))){
+                        console.log("filled:"+filled);
+                        filled++;
+                        if(!aligned){
+                            if(position == 'left'){
+                                //do nothing we are already left aligned
+                                aligned=true;
+                            }
+                            else if(position == 'right'){
+                                temp = temp - 2;
+                                aligned=true;
+                            }
+                            else{ 
+                                //centre
+                                temp--;
+                                aligned=true;
+                            }
+                        }
+                        this.makeValidMovement(x, temp);
+                        console.log(temp);
+                        temp++;
                     }
-                    
                 }
                 for (let x = 0; x < this.squares.length; x++) {
                     this.squares[x].isSelected = false;
