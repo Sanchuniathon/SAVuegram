@@ -18,8 +18,10 @@ export default class Game {
         this.movesMade = 0;
         this.selectedSquareIndex = null;
         this.squares = new Array(54).fill().map( s=> new Square() );
-
         
+        for (let i = 0; i < this.squares.length; i++) {
+            this.squares[i].index = i;
+        }
 
         this.squares[1].value= new Pawn(0,'X',2);
         this.squares[4].value= new Pawn(1,'X',2);
@@ -30,7 +32,7 @@ export default class Game {
 
     }
 
-    //i is the index of the target withing the game grid
+    //i is the index of the target within the game grid
     checkForValidSelection(i){
         if((this.squares[i].value.team == this.currentTurn) && (!this.turnOver) && (this.squares[i].value.hasPlayedThisTurn==false)){
             this.selectedSquareIndex = i;
@@ -109,29 +111,68 @@ export default class Game {
         }else if (refinedPosition == 'right'){
             checkLocation--;
         }//no position adjustment for centre
-        
-        var validRelativeLocations = [-10,-9,-8,-4,-3,-2,2,3,4,8,9,10];
+        var validRelativeLocations = [];
+        var rightIndices = [6,7,8,15,16,17,24,25,26,33,34,35,42,43,44,51,52,53];
+        var leftIndices = [0,1,2,9,10,11,18,19,20,27,28,29,36,37,38,45,46,47];
+        if(rightIndices.includes(selectedSquareIndex)){
+            validRelativeLocations = [-10,-9,-8,2,3,4,8,9,10];
+        }
+        else if(leftIndices.includes(selectedSquareIndex)){
+            validRelativeLocations = [-10,-9,-8,-4,-3,-2,8,9,10];
+        }
+        else{
+            validRelativeLocations = [-10,-9,-8,-4,-3,-2,2,3,4,8,9,10];
+        }
+
         if(validRelativeLocations.includes(checkLocation)){
+            console.log("that's adjacent");
+            
             return true;     
         }else{
             return false;
         }
     }
-    //This method returns true if the target square (i) is valid to move into by checking that the sqaure is not in the deployment
+    //This method returns true if the target square (i) is valid to move into by checking that the square is not in the deployment
     //row, that the square is adjacent, and that the square is neutral or under team control
     checkForValidMove(i){
         //first we block deployment row
         if((i>8) && (i<45)){
             //Can't go into an occupied square
-            if(this.isFundamentalSquareAvailable(i,this.selectedSquareIndex)){
-                //Can only move one space at a time
-                //Can't move within the same square
-                if(this.isSquareAdjacent(this.selectedSquareIndex,i)){
-                    return true;
-                }                      
-            }           
+            for (let x = 0; x < this.squares.length; x++) {
+                if(this.squares[x].isSelected){
+                    if(this.isFundamentalSquareAvailable(i,x)){
+                        //Can only move one space at a time
+                        //Can't move within the same square
+                        if(this.isSquareAdjacent(x,i)){
+                            return true;
+                        }                      
+                    }  
+                }
+            }         
         }
         return false;
+    }
+
+    //This method returns which selected squares are valid to move so that we can sort out which ones will work
+    checkForValidMoveWithValidIndexes(i){
+        var validSelectionsToMove = [];
+        //first we block deployment row
+        if((i>8) && (i<45)){
+            //Can't go into an occupied square
+            for (let x = 0; x < this.squares.length; x++) {
+                if(this.squares[x].isSelected){
+                    if(this.isFundamentalSquareAvailable(i,x)){
+                        //Can only move one space at a time
+                        //Can't move within the same square
+                        if(this.isSquareAdjacent(x,i)){
+                            console.log("pushed " + x);
+                            validSelectionsToMove.push(x);
+                        }                      
+                    }  
+                }
+            }         
+        }
+        return validSelectionsToMove;
     }
     //This method returns true if the selected character can attack an enemy occupied adjacent fundamental square
     checkForAttack(selectedSquareIndex,i){
@@ -163,16 +204,18 @@ export default class Game {
                 //the enemy is slain
                 this.squares[i].value = new Pawn("","","");
             }
-            
-
         }else{
             //miss, nothing happens
         }
-
         //short sleep on the end turn button, needs work and a broader implementation
         this.canEndTurn=false;  
         this.sleepFunction(1000).then(() => { this.canEndTurn = true });
+    }
 
+    makeValidMovement(selectedSquareIndex, i){
+        this.squares[i].value = this.squares[selectedSquareIndex].value;
+        this.squares[selectedSquareIndex].value = new Pawn("","","");
+        this.squares[i].value.hasPlayedThisTurn = true;
 
     }
 
@@ -182,11 +225,11 @@ export default class Game {
         this.turnOver=false;
         this.checkForWinner();
         this.currentTurn = (this.currentTurn === Game.O) ? Game.X : Game.O; //if it is O's turn set to X's turn, otherwise set it to O's turn
-        this.squares.forEach(element => {
-            element.value.hasPlayedThisTurn = false;
-        });
-
+        for (let x = 0; x < this.squares.length; x++) {
+            this.squares[x].value.hasPlayedThisTurn = false;
+        }
     }
+
 
     //Core game engine method handling almost every in grid action
     makeMove(i){
@@ -197,38 +240,43 @@ export default class Game {
         //If there is already a selection made then we can try to make a move or attack
         else if(this.inProgress && this.selectionMade){
             if(this.squares[i].value.team==this.currentTurn){
-                this.checkForValidSelection(i)
+                this.checkForValidSelection(i);
             }
             else if(this.checkForValidMove(i)){
                 //move normally
-                this.squares[i].value = this.squares[this.selectedSquareIndex].value;
-                this.squares[this.selectedSquareIndex].value = new Pawn("","","");
-                this.squares[i].value.hasPlayedThisTurn = true;
-                this.squares.forEach(element => {
-                    element.isSelected = false;
-                });
+                var position = this.getPositionInFundamentalBlock(i);
+                var fullArray = [0,0,0];
+                var validOptions = this.checkForValidMoveWithValidIndexes(i);
+                //this.makeValidMovement(this.selectedSquareIndex,i);
+                for (let x = 0; x < this.squares.length; x++) {
+                    if((validOptions.includes(x))){
+                        console.log(x);
+                        this.makeValidMovement(x, i);
+                    }
+                    
+                }
+                for (let x = 0; x < this.squares.length; x++) {
+                    this.squares[x].isSelected = false;
+                }
                 //this.turnOver = true;
             }
             //We can't move there but maybe we can attack there
             else if(this.checkForAttack(this.selectedSquareIndex,i)){
                 attackSound.play();
                 this.resolveAttack(i);
-                this.squares.forEach(element => {
-                    element.isSelected = false;
-                });
+                for (let x = 0; x < this.squares.length; x++) {
+                    this.squares[x].isSelected = false;
+                }
                 this.squares[this.selectedSquareIndex].value.hasPlayedThisTurn = true;
                 //this.turnOver = true;
             }
             //move is not valid
             else{
                 this.selectedSquareIndex = null;
-                this.squares.forEach(element => {
-                    element.isSelected = false;
-                });
+                for (let x = 0; x < this.squares.length; x++) {
+                    this.squares[x].isSelected = false;
+                }
             }
-            this.selectionMade = false;
-            this.squares[i].isSelected=false;
-
         }
     }
 
