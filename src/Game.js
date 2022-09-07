@@ -36,10 +36,19 @@ export default class Game {
 
     //i is the index of the target within the game grid
     checkForValidSelection(i){
-        if((this.squares[i].value.team == this.currentTurn) && (!this.turnOver) && (this.squares[i].value.hasPlayedThisTurn==false)){
+        if((this.squares[i].value.team == this.currentTurn) && (!this.turnOver) && (this.squares[i].value.hasPlayedThisTurn==false)&&(!this.squares[i].isSelected)){
             this.selectedSquareIndex = i;
             this.selectionMade=true;
             this.squares[i].isSelected=true;
+        }
+        else{
+            this.squares[i].isSelected=false;
+            this.selectionMade=false;
+            for (let x = 0; x < this.squares.length; x++) {
+                if(this.squares[x].isSelected){
+                    this.selectionMade=true;
+                }
+            }
         }
     }
     //currentPosition is the index of the position that the character is currently in within the game grid
@@ -126,9 +135,7 @@ export default class Game {
             validRelativeLocations = [-10,-9,-8,-4,-3,-2,2,3,4,8,9,10];
         }
 
-        if(validRelativeLocations.includes(checkLocation)){
-            console.log("that's adjacent");
-            
+        if(validRelativeLocations.includes(checkLocation)){            
             return true;     
         }else{
             return false;
@@ -167,7 +174,6 @@ export default class Game {
                         //Can only move one space at a time
                         //Can't move within the same square
                         if(this.isSquareAdjacent(x,i)){
-                            console.log("pushed " + x);
                             validSelectionsToMove.push(x);
                         }                      
                     }  
@@ -250,12 +256,9 @@ export default class Game {
                 var filled= 0;
                 var temp = i;
                 var aligned = false;
-                console.log("temp:" + temp);
                 var validOptions = this.checkForValidMoveWithValidIndexes(i);
                 for (let x = 0; x < this.squares.length; x++) {
                     if((validOptions.includes(x)&&(filled<3))){
-                        console.log("filled:"+filled);
-                        filled++;
                         if(!aligned){
                             if(position == 'left'){
                                 //do nothing we are already left aligned
@@ -271,9 +274,20 @@ export default class Game {
                                 aligned=true;
                             }
                         }
-                        this.makeValidMovement(x, temp);
-                        console.log(temp);
-                        temp++;
+                        if(this.checkForValidMove(temp)){
+                            this.makeValidMovement(x, temp);
+                            temp++;
+                            filled=1;
+                        }
+                        else if(this.checkForValidMove(temp+1)){
+                            this.makeValidMovement(x, temp+1);
+                            temp=temp+2;
+                            filled=2;
+                        }
+                        else if(this.checkForValidMove(temp+2)){
+                            this.makeValidMovement(x, temp+2);
+                            filled=3;
+                        }
                     }
                 }
                 for (let x = 0; x < this.squares.length; x++) {
