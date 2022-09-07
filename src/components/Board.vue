@@ -8,9 +8,15 @@
           <div 
             v-for="(square, i) in activeGame.squares" :key="game-view-square.id"
             v-on:click="activeGame.makeMove(i)"
-            v-bind:class="{deploymentRow: (i<=8)||(i>=45),highlighted: square.isHighlighted, selection: square.isSelected, left_edge: i % 3==0, centre_block: (i-1) % 3 ==0, right_edge: (i-2)%3==0}"
+            v-bind:class="{
+              deploymentRow: (i<=8)||(i>=45),
+              highlighted: square.isHighlighted, 
+              selection: square.isSelected, 
+              left_edge: i % 3==0, centre_block: (i-1) % 3 ==0, right_edge: (i-2)%3==0,
+              done: square.value.hasPlayedThisTurn
+              }"
             class="game-view-square">
-            {{square.value.team + square.value.health + square.value.hasPlayedThisTurn + ":" + square.index}}
+            {{square.value.team + square.value.health + ":" + square.index}}
             
           </div>
         </div>

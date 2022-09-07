@@ -249,7 +249,7 @@ header {
   font-size: 20px;
   text-transform: uppercase;
 
-  
+  text-shadow: -.5px -.5px 0 #000, .5px -.5px 0 #000, -.5px .5px 0 #000, .5px .5px 0 #000; //text outline
   margin: auto;
   cursor: pointer;
   user-select: none;
@@ -280,6 +280,11 @@ header {
   background-image: url('..\\Images\\Dirt.jpg');
 }
 .game-view-square.deploymentRow:hover{filter:brightness(50%);}
+
+.game-view-square.done{
+  color:lightgray;
+  
+}
 
 #end-turn-button{
   background-color: #fbeee0;
