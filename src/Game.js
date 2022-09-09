@@ -1,7 +1,9 @@
 import Square from './Square'
 import Pawn from './Pawn';
-import Cannon from './Cannon.mp3'
-var attackSound = new Audio(Cannon)
+import AI from './AI';
+import Cannon from './Cannon.mp3';
+import Cry from './glaceon-cry.mp3';
+
 //fundamental gridblock - The larger squares that each contain 3 refined blocks
 //refined gridblock - the smaller blocks within each fundamental block
 //Game initialization
@@ -18,14 +20,21 @@ export default class Game {
         this.movesMade = 0;
         this.selectedSquareIndex = null;
         this.squares = new Array(54).fill().map( s=> new Square() );
+        this.enemy = new AI();
         
         for (let i = 0; i < this.squares.length; i++) {
             this.squares[i].index = i;
         }
 
+        this.squares[0].value= new Pawn(0,'X',2);
         this.squares[1].value= new Pawn(0,'X',2);
+        this.squares[2].value= new Pawn(0,'X',2);
+        this.squares[3].value= new Pawn(0,'X',2);
         this.squares[4].value= new Pawn(1,'X',2);
+        this.squares[5].value= new Pawn(0,'X',2);
+        this.squares[6].value= new Pawn(2,'X',2);
         this.squares[7].value= new Pawn(2,'X',2);
+        this.squares[8].value= new Pawn(2,'X',2);
         this.squares[45].value= new Pawn(3,'O',2);
         this.squares[46].value= new Pawn(3,'O',2);
         this.squares[47].value= new Pawn(3,'O',2);
@@ -211,6 +220,8 @@ export default class Game {
             }else{
                 //the enemy is slain
                 this.squares[i].value = new Pawn("","","");
+                var slainSound = new Audio(Cry);
+                slainSound.play();
             }
         }else{
             //miss, nothing happens
@@ -235,12 +246,30 @@ export default class Game {
         this.currentTurn = (this.currentTurn === Game.O) ? Game.X : Game.O; //if it is O's turn set to X's turn, otherwise set it to O's turn
         for (let x = 0; x < this.squares.length; x++) {
             this.squares[x].value.hasPlayedThisTurn = false;
+            this.squares[x].isSelected = false;
+        }
+        if(this.currentTurn == Game.X){
+            //AI time
+            while(!this.turnOver){
+                for (let x = 0; x < this.squares.length; x++) {
+                    if(this.squares[x].value.team == 'X'){
+                        console.log('pew pew');
+                        this.squares[x].isSelected = true;
+                        var AIMove = this.enemy.determineMove(x, this.squares);
+                        this.selectedSquareIndex=x;
+                        this.makeMove(AIMove);
+                    }
+                }
+            }
+
+            this.completeTurn();
         }
     }
 
 
     //Core game engine method handling almost every in grid action
     makeMove(i){
+
         //we don't have a tile selected
         if(this.inProgress && !this.selectionMade){
             this.checkForValidSelection(i);
@@ -293,17 +322,20 @@ export default class Game {
                 for (let x = 0; x < this.squares.length; x++) {
                     this.squares[x].isSelected = false;
                 }
-                //this.turnOver = true;
             }
             //We can't move there but maybe we can attack there
-            else if(this.checkForAttack(this.selectedSquareIndex,i)){
-                attackSound.play();
-                this.resolveAttack(i);
+            else if(this.checkForAttack(this.selectedSquareIndex,i)){      
                 for (let x = 0; x < this.squares.length; x++) {
-                    this.squares[x].isSelected = false;
+                    if(this.squares[x].isSelected){
+                        console.log(x);
+                        var attackSound = new Audio(Cannon);
+                        attackSound.play();
+                        this.resolveAttack(i);
+                        this.squares[x].value.hasPlayedThisTurn = true;
+                        this.squares[x].isSelected = false;
+                    }
+                    
                 }
-                this.squares[this.selectedSquareIndex].value.hasPlayedThisTurn = true;
-                //this.turnOver = true;
             }
             //move is not valid
             else{
@@ -312,7 +344,17 @@ export default class Game {
                     this.squares[x].isSelected = false;
                 }
             }
+
         }
+        this.turnOver=true;
+        for (let x = 0; x < this.squares.length; x++) {
+            if((this.squares[x].value.team==this.currentTurn)&&(!this.squares[x].value.hasPlayedThisTurn)){
+                this.turnOver=false;
+                console.log(this.squares[x].hasPlayedThisTurn);
+            }
+        }
+        console.log(this.turnOver);
+
     }
 
     checkForWinner(){

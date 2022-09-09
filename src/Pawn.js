@@ -3,7 +3,12 @@ export default class Pawn{
         this.team = team;
         this.id = id;
         this.health = health;
-        this.accuracy = .5;
+        if(this.team == 'X'){ //weak evil guys
+            this.accuracy = .35;
+        }
+        else{
+            this.accuracy = .5;
+        }
         this.isHighlighted = false;
         this.hasPlayedThisTurn = false;
     }
