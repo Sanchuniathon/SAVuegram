@@ -16,14 +16,14 @@
               done: square.value.hasPlayedThisTurn
               }"
             class="game-view-square">
-            {{square.value.team + square.value.health}}
             <div id="character" 
             v-bind:style="{
-              'background-image':'url(black-white-back-shiny.png)', 
+              'background-image':'url('+ frontOrBack(i) +')', 
               'background-position-x':characterIconX(i)+'px', 
-              'background-position-y':characterIconY(i)+'px'
+              'background-position-y':characterIconY(i)+'px',
+              'filter': 'grayscale('+healthPercentage(i)+')'
               }">
-              
+              {{square.value.healthCurrent}}
             </div>
           </div>
         </div>
@@ -71,12 +71,19 @@ export default {
     frontOrBack: function(i){
       if(this.activeGame.squares[i].value.team == 'O'){
         //back
-        return "'..\\assets\\Images\black-white-back-shiny.png'";
+        
+        return require('..\\assets\\Images\\black-white-back-shiny.png');
       }
-      else{
+      else if(this.activeGame.squares[i].value.team == 'X'){
         //front
-        return "'..\\assets\\Images\black-white-back-shiny.png'";
+        return require('..\\assets\\Images\\black-white-front-shiny.webp');
       }
+    },
+    healthPercentage: function(i){
+      var percentage;
+      percentage = 1 - (this.activeGame.squares[i].value.healthCurrent / this.activeGame.squares[i].value.healthTotal);
+      percentage = percentage + 0.2;
+      return percentage;
     }
   }
 }

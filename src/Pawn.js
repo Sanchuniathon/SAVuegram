@@ -2,7 +2,8 @@ export default class Pawn{
     constructor(id, team, health, character){
         this.team = team;
         this.id = id;
-        this.health = health;
+        this.healthTotal = health;
+        this.healthCurrent=health;
         if(this.team == 'X'){ //weak evil guys
             this.accuracy = .35;
         }
@@ -11,7 +12,7 @@ export default class Pawn{
         }
         this.isHighlighted = false;
         this.hasPlayedThisTurn = false;
-        this.character = [-100,0]//[-2880,-1920];//default to empty space
+        this.character = [0,0]//[-2880,-1920];//default to empty space
 
     }
 }

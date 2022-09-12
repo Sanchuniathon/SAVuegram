@@ -216,8 +216,8 @@ export default class Game {
         var scale = 100;
         if(scale*accuracy>=strikeValue){
             //hit
-            if(this.squares[i].value.health >= 2){
-                this.squares[i].value.health = this.squares[i].value.health - 1;
+            if(this.squares[i].value.healthCurrent >= 2){
+                this.squares[i].value.healthCurrent = this.squares[i].value.healthCurrent - 1;
             }else{
                 //the enemy is slain
                 this.squares[i].value = new Pawn("","","");
