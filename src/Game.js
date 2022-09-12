@@ -1,8 +1,9 @@
 import Square from './Square'
 import Pawn from './Pawn';
 import AI from './AI';
-import Cannon from './Cannon.mp3';
-import Cry from './glaceon-cry.mp3';
+import Cannon from './assets/Sounds/Cannon.mp3';
+import Cry from './assets/Sounds/glaceon-cry.mp3';
+import Squeaks from './assets/Sounds/guineapig_squeaks.mp3';
 
 //fundamental gridblock - The larger squares that each contain 3 refined blocks
 //refined gridblock - the smaller blocks within each fundamental block
@@ -25,22 +26,23 @@ export default class Game {
         for (let i = 0; i < this.squares.length; i++) {
             this.squares[i].index = i;
         }
-
-        this.squares[0].value= new Pawn(0,'X',5);
-        this.squares[1].value= new Pawn(0,'X',5);
-        this.squares[2].value= new Pawn(0,'X',5);
-        this.squares[3].value= new Pawn(0,'X',5);
-        this.squares[4].value= new Pawn(1,'X',5);
-        this.squares[5].value= new Pawn(0,'X',5);
-        this.squares[6].value= new Pawn(2,'X',5);
-        this.squares[7].value= new Pawn(2,'X',5);
-        this.squares[8].value= new Pawn(2,'X',5);
-        this.squares[45].value= new Pawn(3,'O',2);
-        this.squares[46].value= new Pawn(3,'O',2);
-        this.squares[47].value= new Pawn(3,'O',5);
-        this.squares[48].value= new Pawn(3,'O',2);
-        this.squares[49].value= new Pawn(4,'O',2);
-        this.squares[52].value= new Pawn(5,'O',2);
+        var enemyCharacter = [-96,0]; //Ivysaur
+        var friendlyCharacter = [-2496,0]; //sandshrew
+        this.squares[0].value= new Pawn(0,'X',5,enemyCharacter[0],enemyCharacter[1]);
+        this.squares[1].value= new Pawn(0,'X',5,enemyCharacter[0],enemyCharacter[1]);
+        this.squares[2].value= new Pawn(0,'X',5,enemyCharacter[0],enemyCharacter[1]);
+        this.squares[3].value= new Pawn(0,'X',5,enemyCharacter[0],enemyCharacter[1]);
+        this.squares[4].value= new Pawn(1,'X',5,enemyCharacter[0],enemyCharacter[1]);
+        this.squares[5].value= new Pawn(0,'X',5,enemyCharacter[0],enemyCharacter[1]);
+        this.squares[6].value= new Pawn(2,'X',5,enemyCharacter[0],enemyCharacter[1]);
+        this.squares[7].value= new Pawn(2,'X',5,enemyCharacter[0],enemyCharacter[1]);
+        this.squares[8].value= new Pawn(2,'X',5,enemyCharacter[0],enemyCharacter[1]);
+        this.squares[45].value= new Pawn(3,'O',2,friendlyCharacter[0],friendlyCharacter[1]);
+        this.squares[46].value= new Pawn(3,'O',2,friendlyCharacter[0],friendlyCharacter[1]);
+        this.squares[47].value= new Pawn(3,'O',5,-2592,0);
+        this.squares[48].value= new Pawn(3,'O',2,friendlyCharacter[0],friendlyCharacter[1]);
+        this.squares[49].value= new Pawn(4,'O',2,friendlyCharacter[0],friendlyCharacter[1]);
+        this.squares[52].value= new Pawn(5,'O',2,friendlyCharacter[0],friendlyCharacter[1]);
 
     }
 
@@ -218,6 +220,8 @@ export default class Game {
             //hit
             if(this.squares[i].value.healthCurrent >= 2){
                 this.squares[i].value.healthCurrent = this.squares[i].value.healthCurrent - 1;
+                var hurtSound = new Audio(Squeaks);
+                hurtSound.play();
             }else{
                 //the enemy is slain
                 this.squares[i].value = new Pawn("","","");
@@ -244,28 +248,33 @@ export default class Game {
         this.movesMade++;
         this.turnOver=false;
         this.checkForWinner();
-        this.currentTurn = (this.currentTurn === Game.O) ? Game.X : Game.O; //if it is O's turn set to X's turn, otherwise set it to O's turn
-        for (let x = 0; x < this.squares.length; x++) {
-            this.squares[x].value.hasPlayedThisTurn = false;
-            this.squares[x].isSelected = false;
-        }
-        if(this.currentTurn == Game.X){
-            //AI time
-            while(!this.turnOver){
-                for (let x = 0; x < this.squares.length; x++) {
-                    if((this.squares[x].value.team == 'X')&&(!this.squares[x].value.hasPlayedThisTurn)){
-                        this.squares[x].isSelected = true;
-                        var AIMove = this.enemy.determineMove(x, this.squares);
-                        this.selectedSquareIndex=x;
-                        await new Promise(done => setTimeout(() => done(), 50));  
-                        this.makeMove(AIMove);
-                        
+        if(this.inProgress){
+            this.currentTurn = (this.currentTurn === Game.O) ? Game.X : Game.O; //if it is O's turn set to X's turn, otherwise set it to O's turn
+            for (let x = 0; x < this.squares.length; x++) {
+                this.squares[x].value.hasPlayedThisTurn = false;
+                this.squares[x].isSelected = false;
+            }
+            if(this.currentTurn == Game.X){
+                //AI time
+                while(!this.turnOver){
+                    for (let x = 0; x < this.squares.length; x++) {
+                        if((this.squares[x].value.team == 'X')&&(!this.squares[x].value.hasPlayedThisTurn)){
+                            this.squares[x].isSelected = true;
+                            var AIMove = this.enemy.determineMove(x, this.squares);
+                            this.selectedSquareIndex=x;
+                            await new Promise(done => setTimeout(() => done(), 10));  
+                            this.makeMove(AIMove);
+                            
+                        }
                     }
                 }
-            }
-
-            this.completeTurn();
+                this.completeTurn();
+            }       
         }
+        else{
+            //do nothing because the game is over
+        }
+        
     }
 
 

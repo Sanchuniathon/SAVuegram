@@ -1,5 +1,5 @@
 export default class Pawn{
-    constructor(id, team, health, character){
+    constructor(id, team, health, characterX, characterY){
         this.team = team;
         this.id = id;
         this.healthTotal = health;
@@ -12,7 +12,7 @@ export default class Pawn{
         }
         this.isHighlighted = false;
         this.hasPlayedThisTurn = false;
-        this.character = [0,0]//[-2880,-1920];//default to empty space
+        this.character = [characterX,characterY]//[-2880,-1920];//default to empty space
 
     }
 }
