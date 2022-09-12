@@ -28,24 +28,33 @@ export default class Game {
         }
         var enemyCharacter = [-96,0]; //Ivysaur
         var friendlyCharacter = [-2496,0]; //sandshrew
-        this.squares[0].value= new Pawn(0,'X',5,enemyCharacter[0],enemyCharacter[1]);
-        this.squares[1].value= new Pawn(0,'X',5,enemyCharacter[0],enemyCharacter[1]);
-        this.squares[2].value= new Pawn(0,'X',5,enemyCharacter[0],enemyCharacter[1]);
-        this.squares[3].value= new Pawn(0,'X',5,enemyCharacter[0],enemyCharacter[1]);
-        this.squares[4].value= new Pawn(1,'X',5,enemyCharacter[0],enemyCharacter[1]);
-        this.squares[5].value= new Pawn(0,'X',5,enemyCharacter[0],enemyCharacter[1]);
-        this.squares[6].value= new Pawn(2,'X',5,enemyCharacter[0],enemyCharacter[1]);
-        this.squares[7].value= new Pawn(2,'X',5,enemyCharacter[0],enemyCharacter[1]);
-        this.squares[8].value= new Pawn(2,'X',5,enemyCharacter[0],enemyCharacter[1]);
-        this.squares[45].value= new Pawn(3,'O',2,friendlyCharacter[0],friendlyCharacter[1]);
-        this.squares[46].value= new Pawn(3,'O',2,friendlyCharacter[0],friendlyCharacter[1]);
-        this.squares[47].value= new Pawn(3,'O',5,-2592,0);
-        this.squares[48].value= new Pawn(3,'O',2,friendlyCharacter[0],friendlyCharacter[1]);
-        this.squares[49].value= new Pawn(4,'O',2,friendlyCharacter[0],friendlyCharacter[1]);
-        this.squares[52].value= new Pawn(5,'O',2,friendlyCharacter[0],friendlyCharacter[1]);
+        this.squares[0].value= new Pawn(0,'X',5,this.randomCharacter()[0],this.randomCharacter()[1]);
+        this.squares[1].value= new Pawn(0,'X',5,this.randomCharacter()[0],this.randomCharacter()[1]);
+        this.squares[2].value= new Pawn(0,'X',5,this.randomCharacter()[0],this.randomCharacter()[1]);
+        this.squares[3].value= new Pawn(0,'X',5,this.randomCharacter()[0],this.randomCharacter()[1]);
+        this.squares[4].value= new Pawn(1,'X',5,this.randomCharacter()[0],this.randomCharacter()[1]);
+        this.squares[5].value= new Pawn(0,'X',5,this.randomCharacter()[0],this.randomCharacter()[1]);
+        this.squares[6].value= new Pawn(2,'X',5,this.randomCharacter()[0],this.randomCharacter()[1]);
+        this.squares[7].value= new Pawn(2,'X',5,this.randomCharacter()[0],this.randomCharacter()[1]);
+        this.squares[8].value= new Pawn(2,'X',5,this.randomCharacter()[0],this.randomCharacter()[1]);
+        this.squares[45].value= new Pawn(3,'O',2,this.randomCharacter()[0],this.randomCharacter()[1]);
+        this.squares[46].value= new Pawn(3,'O',2,this.randomCharacter()[0],this.randomCharacter()[1]);
+        this.squares[47].value= new Pawn(3,'O',5,this.randomCharacter()[0],this.randomCharacter()[1]);
+        this.squares[48].value= new Pawn(3,'O',2,this.randomCharacter()[0],this.randomCharacter()[1]);
+        this.squares[49].value= new Pawn(4,'O',2,this.randomCharacter()[0],this.randomCharacter()[1]);
+        this.squares[52].value= new Pawn(5,'O',2,this.randomCharacter()[0],this.randomCharacter()[1]);
 
     }
 
+    randomCharacter(){
+        var returnArray = [0,0]
+        returnArray[0] = Math.floor(Math.random() * 32); //x
+        returnArray[1] = Math.floor(Math.random() * 22); //y
+
+        returnArray[0] = returnArray[0] * -96;
+        returnArray[1] = returnArray[1] * -96;
+        return returnArray;
+    }
     //i is the index of the target within the game grid
     checkForValidSelection(i){
         if((this.squares[i].value.team == this.currentTurn) && (!this.turnOver) && (this.squares[i].value.hasPlayedThisTurn==false)&&(!this.squares[i].isSelected)){
