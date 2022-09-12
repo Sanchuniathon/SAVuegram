@@ -16,8 +16,15 @@
               done: square.value.hasPlayedThisTurn
               }"
             class="game-view-square">
-            {{square.value.team + square.value.health + ":" + square.index}}
-            
+            {{square.value.team + square.value.health}}
+            <div id="character" 
+            v-bind:style="{
+              'background-image':'url(black-white-back-shiny.png)', 
+              'background-position-x':characterIconX(i)+'px', 
+              'background-position-y':characterIconY(i)+'px'
+              }">
+              
+            </div>
           </div>
         </div>
         <button :disabled="activeGame.canEndTurn == false" id="end-turn-button" @click="activeGame.completeTurn()">End Turn</button>       
@@ -38,11 +45,37 @@ export default {
   },
   computed: {
     turnStatus: function(){
-      if(this.activeGame.turnOver){
+      if(this.activeGame.inProgress){
+        if(this.activeGame.turnOver){
         return 'The turn is over';
+        }
+        else{
+          return 'It is ' + this.activeGame.currentTurn +'\'s turn';
+        }
       }
       else{
-        return 'It is ' + this.activeGame.currentTurn +'\'s turn';
+        return 'The game is over';
+      }
+
+    },
+
+
+  },
+  methods: {
+    characterIconX: function(i){
+      return this.activeGame.squares[i].value.character[0];
+    },
+    characterIconY: function(i){
+      return this.activeGame.squares[i].value.character[1];
+    },
+    frontOrBack: function(i){
+      if(this.activeGame.squares[i].value.team == 'O'){
+        //back
+        return "'..\\assets\\Images\black-white-back-shiny.png'";
+      }
+      else{
+        //front
+        return "'..\\assets\\Images\black-white-back-shiny.png'";
       }
     }
   }

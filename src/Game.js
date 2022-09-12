@@ -26,18 +26,19 @@ export default class Game {
             this.squares[i].index = i;
         }
 
-        this.squares[0].value= new Pawn(0,'X',2);
-        this.squares[1].value= new Pawn(0,'X',2);
-        this.squares[2].value= new Pawn(0,'X',2);
-        this.squares[3].value= new Pawn(0,'X',2);
-        this.squares[4].value= new Pawn(1,'X',2);
-        this.squares[5].value= new Pawn(0,'X',2);
-        this.squares[6].value= new Pawn(2,'X',2);
-        this.squares[7].value= new Pawn(2,'X',2);
-        this.squares[8].value= new Pawn(2,'X',2);
+        this.squares[0].value= new Pawn(0,'X',5);
+        this.squares[1].value= new Pawn(0,'X',5);
+        this.squares[2].value= new Pawn(0,'X',5);
+        this.squares[3].value= new Pawn(0,'X',5);
+        this.squares[4].value= new Pawn(1,'X',5);
+        this.squares[5].value= new Pawn(0,'X',5);
+        this.squares[6].value= new Pawn(2,'X',5);
+        this.squares[7].value= new Pawn(2,'X',5);
+        this.squares[8].value= new Pawn(2,'X',5);
         this.squares[45].value= new Pawn(3,'O',2);
         this.squares[46].value= new Pawn(3,'O',2);
-        this.squares[47].value= new Pawn(3,'O',2);
+        this.squares[47].value= new Pawn(3,'O',5);
+        this.squares[48].value= new Pawn(3,'O',2);
         this.squares[49].value= new Pawn(4,'O',2);
         this.squares[52].value= new Pawn(5,'O',2);
 
@@ -239,7 +240,7 @@ export default class Game {
     }
 
     //method is directly connected in Vue with the end turn button. This handles all of the resetting and cleanup at the end of a turn
-    completeTurn(){   
+    async completeTurn(){   
         this.movesMade++;
         this.turnOver=false;
         this.checkForWinner();
@@ -252,12 +253,13 @@ export default class Game {
             //AI time
             while(!this.turnOver){
                 for (let x = 0; x < this.squares.length; x++) {
-                    if(this.squares[x].value.team == 'X'){
-                        console.log('pew pew');
+                    if((this.squares[x].value.team == 'X')&&(!this.squares[x].value.hasPlayedThisTurn)){
                         this.squares[x].isSelected = true;
                         var AIMove = this.enemy.determineMove(x, this.squares);
                         this.selectedSquareIndex=x;
+                        await new Promise(done => setTimeout(() => done(), 50));  
                         this.makeMove(AIMove);
+                        
                     }
                 }
             }
@@ -358,9 +360,21 @@ export default class Game {
     }
 
     checkForWinner(){
-        //leave for now. No need to add X and O logic
+        var xAlive=false;
+        var oAlive=false;
+        for (let x = 0; x < this.squares.length; x++) {
+            if(this.squares[x].value.team=='X'){
+                xAlive=true;
+            }
+            else if ((this.squares[x].value.team=='O')){
+                oAlive=true;
+            }
+        }
+        if((!xAlive)||(!oAlive)){
+            this.inProgress = false;
+        }
+            
 
-        this.inProgress = true;
 
     }
 
