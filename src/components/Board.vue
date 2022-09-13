@@ -35,7 +35,7 @@
 
 <script>
 import Game from "../Game.js"
-
+import { playerTeamCollection, auth } from '@/firebase'
 export default {
 
   data() {

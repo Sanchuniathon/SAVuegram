@@ -1,6 +1,7 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
 import * as fb from '../firebase'
+import { doc, setDoc } from "firebase/firestore"
 import router from '../router/index'
 
 Vue.use(Vuex)
@@ -51,6 +52,14 @@ const store = new Vuex.Store({
       await fb.usersCollection.doc(user.uid).set({
         name: form.name,
         title: form.title
+      })
+      await fb.playerTeamCollection.add({
+        createdOn: new Date(),
+        team: form.title,
+        userId: fb.auth.currentUser.uid,
+        userName: form.name,
+        characters: 0,
+        victories: 0
       })
 
       // fetch user profile and set in state
