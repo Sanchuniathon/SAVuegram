@@ -23,7 +23,7 @@ export default class Game {
         this.movesMade = 0;
         this.selectedSquareIndex = null;
         this.squares = new Array(54).fill().map( s=> new Square() );
-        this.enemy = new AI();
+        this.enemyAI = new AI();
         
         for (let i = 0; i < this.squares.length; i++) {
             this.squares[i].index = i;
@@ -33,10 +33,10 @@ export default class Game {
         var friendlyCharacter = [-2496,0]; //sandshrew
         this.squares[0].value= new Pawn(0,'X',5,this.randomCharacter()[0],this.randomCharacter()[1]);
         this.squares[1].value= new Pawn(0,'X',5,this.randomCharacter()[0],this.randomCharacter()[1]);
-        this.squares[2].value= new Pawn(0,'X',5,this.randomCharacter()[0],this.randomCharacter()[1]);
-        this.squares[3].value= new Pawn(0,'X',5,this.randomCharacter()[0],this.randomCharacter()[1]);
-        this.squares[4].value= new Pawn(1,'X',5,this.randomCharacter()[0],this.randomCharacter()[1]);
-        this.squares[5].value= new Pawn(0,'X',5,this.randomCharacter()[0],this.randomCharacter()[1]);
+        // this.squares[2].value= new Pawn(0,'X',5,this.randomCharacter()[0],this.randomCharacter()[1]);
+        // this.squares[3].value= new Pawn(0,'X',5,this.randomCharacter()[0],this.randomCharacter()[1]);
+        // this.squares[4].value= new Pawn(1,'X',5,this.randomCharacter()[0],this.randomCharacter()[1]);
+        // this.squares[5].value= new Pawn(0,'X',5,this.randomCharacter()[0],this.randomCharacter()[1]);
         this.squares[6].value= new Pawn(2,'X',5,this.randomCharacter()[0],this.randomCharacter()[1]);
         this.squares[7].value= new Pawn(2,'X',5,this.randomCharacter()[0],this.randomCharacter()[1]);
         this.squares[8].value= new Pawn(2,'X',5,this.randomCharacter()[0],this.randomCharacter()[1]);
@@ -104,7 +104,7 @@ export default class Game {
     }
     //This method uses a selected square (selectedSquare) and a destination choice (i) and returns true if the character can move there
     isFundamentalSquareAvailable(i, selectedSquareIndex){
-        var refinedPosition = this.getPositionInFundamentalBlock(i, 0); //zero
+        var refinedPosition = this.getPositionInFundamentalBlock(i);
         let movingTeam = this.squares[selectedSquareIndex].value.team;
         if(refinedPosition == 'left'){           
             for (let x = i; x < (i+3); x++) {
@@ -153,7 +153,7 @@ export default class Game {
     isSquareAdjacent(selectedSquareIndex, i){
         var checkLocation = (selectedSquareIndex - i);
         //Can't move within the same square
-        var refinedPosition = this.getPositionInFundamentalBlock(selectedSquareIndex, i);
+        var refinedPosition = this.getPositionInFundamentalBlock(selectedSquareIndex);
         if(refinedPosition == 'left'){
             checkLocation++;
         }else if (refinedPosition == 'right'){
@@ -285,9 +285,9 @@ export default class Game {
                     for (let x = 0; x < this.squares.length; x++) {
                         if((this.squares[x].value.team == 'X')&&(!this.squares[x].value.hasPlayedThisTurn)){
                             this.squares[x].isSelected = true;
-                            var AIMove = this.enemy.determineMove(x, this.squares);
+                            var AIMove = this.enemyAI.determineMove(x, this.squares);
                             this.selectedSquareIndex=x;
-                            await new Promise(done => setTimeout(() => done(), 10));  
+                            await new Promise(done => setTimeout(() => done(), 500));  
                             this.makeMove(AIMove);
                             
                         }
@@ -363,7 +363,6 @@ export default class Game {
             else if(this.checkForAttack(this.selectedSquareIndex,i)){      
                 for (let x = 0; x < this.squares.length; x++) {
                     if(this.squares[x].isSelected){
-                        console.log(x);
                         var attackSound = new Audio(Cannon);
                         attackSound.play();
                         this.resolveAttack(i);
@@ -386,10 +385,8 @@ export default class Game {
         for (let x = 0; x < this.squares.length; x++) {
             if((this.squares[x].value.team==this.currentTurn)&&(!this.squares[x].value.hasPlayedThisTurn)){
                 this.turnOver=false;
-                console.log(this.squares[x].hasPlayedThisTurn);
             }
         }
-        console.log(this.turnOver);
 
     }
 

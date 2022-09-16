@@ -4,6 +4,5 @@ export default class Square{
         this.value = new Pawn("","","");
         this.isHighlighted = false;
         this.isSelected = false;
-        this.index;
     }
 }
