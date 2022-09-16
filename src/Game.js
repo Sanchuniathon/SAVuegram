@@ -24,28 +24,30 @@ export default class Game {
         this.selectedSquareIndex = null;
         this.squares = new Array(54).fill().map( s=> new Square() );
         this.enemyAI = new AI();
+        this.shuffleAI = [];
         
         for (let i = 0; i < this.squares.length; i++) {
-            this.squares[i].index = i;
+            this.shuffleAI.push(i);
+
         }
 
         var enemyCharacter = [-96,0]; //Ivysaur
         var friendlyCharacter = [-2496,0]; //sandshrew
         this.squares[0].value= new Pawn(0,'X',5,this.randomCharacter()[0],this.randomCharacter()[1]);
         this.squares[1].value= new Pawn(0,'X',5,this.randomCharacter()[0],this.randomCharacter()[1]);
-        // this.squares[2].value= new Pawn(0,'X',5,this.randomCharacter()[0],this.randomCharacter()[1]);
-        // this.squares[3].value= new Pawn(0,'X',5,this.randomCharacter()[0],this.randomCharacter()[1]);
-        // this.squares[4].value= new Pawn(1,'X',5,this.randomCharacter()[0],this.randomCharacter()[1]);
-        // this.squares[5].value= new Pawn(0,'X',5,this.randomCharacter()[0],this.randomCharacter()[1]);
+        this.squares[2].value= new Pawn(0,'X',5,this.randomCharacter()[0],this.randomCharacter()[1]);
+        this.squares[3].value= new Pawn(0,'X',5,this.randomCharacter()[0],this.randomCharacter()[1]);
+        this.squares[4].value= new Pawn(1,'X',5,this.randomCharacter()[0],this.randomCharacter()[1]);
+        this.squares[5].value= new Pawn(0,'X',5,this.randomCharacter()[0],this.randomCharacter()[1]);
         this.squares[6].value= new Pawn(2,'X',5,this.randomCharacter()[0],this.randomCharacter()[1]);
         this.squares[7].value= new Pawn(2,'X',5,this.randomCharacter()[0],this.randomCharacter()[1]);
         this.squares[8].value= new Pawn(2,'X',5,this.randomCharacter()[0],this.randomCharacter()[1]);
-        this.squares[45].value= new Pawn(3,'O',2,this.randomCharacter()[0],this.randomCharacter()[1]);
-        this.squares[46].value= new Pawn(3,'O',2,this.randomCharacter()[0],this.randomCharacter()[1]);
-        this.squares[47].value= new Pawn(3,'O',5,this.randomCharacter()[0],this.randomCharacter()[1]);
-        this.squares[48].value= new Pawn(3,'O',2,this.randomCharacter()[0],this.randomCharacter()[1]);
-        this.squares[49].value= new Pawn(4,'O',2,this.randomCharacter()[0],this.randomCharacter()[1]);
-        this.squares[52].value= new Pawn(5,'O',2,this.randomCharacter()[0],this.randomCharacter()[1]);
+        this.squares[45].value= new Pawn(3,'O',6,this.randomCharacter()[0],this.randomCharacter()[1]);
+        this.squares[46].value= new Pawn(3,'O',6,this.randomCharacter()[0],this.randomCharacter()[1]);
+        this.squares[47].value= new Pawn(3,'O',6,this.randomCharacter()[0],this.randomCharacter()[1]);
+        this.squares[48].value= new Pawn(3,'O',6,this.randomCharacter()[0],this.randomCharacter()[1]);
+        this.squares[49].value= new Pawn(4,'O',6,this.randomCharacter()[0],this.randomCharacter()[1]);
+        this.squares[52].value= new Pawn(5,'O',6,this.randomCharacter()[0],this.randomCharacter()[1]);
 
     }/*
     async getTeams(db) {
@@ -280,16 +282,16 @@ export default class Game {
                 this.squares[x].isSelected = false;
             }
             if(this.currentTurn == Game.X){
+                var randomOrder = this.shuffle(this.shuffleAI);
                 //AI time
                 while(!this.turnOver){
                     for (let x = 0; x < this.squares.length; x++) {
-                        if((this.squares[x].value.team == 'X')&&(!this.squares[x].value.hasPlayedThisTurn)){
-                            this.squares[x].isSelected = true;
-                            var AIMove = this.enemyAI.determineMove(x, this.squares);
-                            this.selectedSquareIndex=x;
+                        if((this.squares[randomOrder[x]].value.team == 'X')&&(!this.squares[randomOrder[x]].value.hasPlayedThisTurn)){
+                            this.squares[randomOrder[x]].isSelected = true;
+                            var AIMove = this.enemyAI.determineMove(randomOrder[x], this.squares);
+                            this.selectedSquareIndex=randomOrder[x];
                             await new Promise(done => setTimeout(() => done(), 500));  
                             this.makeMove(AIMove);
-                            
                         }
                     }
                 }
@@ -312,7 +314,12 @@ export default class Game {
         }
         //If there is already a selection made then we can try to make a move or attack
         else if(this.inProgress && this.selectionMade){
-            if(this.squares[i].value.team==this.currentTurn){
+            if(i==-1){
+                //AI skips turn because there are no possible moves
+                this.squares[this.selectedSquareIndex].value.hasPlayedThisTurn = true;
+                this.squares[this.selectedSquareIndex].isSelected = false;
+            }
+            else if(this.squares[i].value.team==this.currentTurn){
                 this.checkForValidSelection(i);
             }
             else if(this.checkForValidMove(i)){
@@ -408,6 +415,23 @@ export default class Game {
 
 
     }
+    shuffle(array) {
+        let currentIndex = array.length,  randomIndex;
+      
+        // While there remain elements to shuffle.
+        while (currentIndex != 0) {
+      
+          // Pick a remaining element.
+          randomIndex = Math.floor(Math.random() * currentIndex);
+          currentIndex--;
+      
+          // And swap it with the current element.
+          [array[currentIndex], array[randomIndex]] = [
+            array[randomIndex], array[currentIndex]];
+        }
+      
+        return array;
+      }
 
 }
 

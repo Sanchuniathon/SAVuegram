@@ -9,11 +9,7 @@ export default class AI{
     }
     determineMove(selectedSquare, board){
         var move = this.getOpenAdjacentSquares(selectedSquare, board);
-        //console.log("our choice is: " + move[randomlyChosenMove]);
         return this.pickBestMove(move, board);
-        //var randomlyChosenMove = this.getRandomInt(move.length);
-        
-        //return move[randomlyChosenMove];
     }
     getPositionInFundamentalBlock(currentPosition){
         if(currentPosition%3==0){
@@ -119,14 +115,19 @@ export default class AI{
     }
 
     pickBestMove(possibleMoves, board){
-        possibleMoves.sort(function(a, b){return b - a});
-        for (let x = 0; x < (possibleMoves.length); x++) {
-            //pick the best move. Priority is to attack if possible
-            if(board[possibleMoves[x]].value.team == 'O'){
-                return possibleMoves[x]
+        if(possibleMoves.length>0){
+            for (let x = 0; x < (possibleMoves.length); x++) {
+                //pick the best move. Priority is to attack if possible
+                if(board[possibleMoves[x]].value.team == 'O'){
+                    return possibleMoves[x]
+                }
             }
+            return possibleMoves[this.getRandomInt(possibleMoves.length)];
         }
-        return possibleMoves[this.getRandomInt(possibleMoves.length)];
+        else{
+            return -1; // there are no moves
+        }
+
     }
 
 }
