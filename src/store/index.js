@@ -53,20 +53,26 @@ const store = new Vuex.Store({
         name: form.name,
         title: form.title
       })
-      await fb.playerTeamCollection.add({
+      await fb.playerTeamCollection.doc(user.uid).set({
         createdOn: new Date(),
         team: form.title,
         userId: fb.auth.currentUser.uid,
         userName: form.name,
         characters: 0,
-        victories: 0
+        victories: 0,
+        Troop: {
+          0: "Jeff,1,10,0.37,-96,-96",
+          1: "Paul,2,11,0.25,0,-96"
+        }
       })
+
 
       // fetch user profile and set in state
       dispatch('fetchUserProfile', user)
     },
     async fetchUserProfile({ commit }, user) {
       // fetch user profile
+
       const userProfile = await fb.usersCollection.doc(user.uid).get()
 
       // set user profile in state

@@ -27,7 +27,8 @@
             </div>
           </div>
         </div>
-        <button :disabled="activeGame.canEndTurn == false" id="end-turn-button" @click="activeGame.completeTurn()">End Turn</button>       
+        <button :disabled="activeGame.canEndTurn == false" id="end-turn-button" @click="activeGame.completeTurn()">End Turn</button>    
+        <button :disabled="activeGame.canEndTurn == false" id="end-turn-button" @click="setCharacters()">Start</button>     
       </div>
     </section>
 </template>
@@ -35,6 +36,7 @@
 
 <script>
 import Game from "../Game.js"
+import Pawn from "../Pawn.js"
 import { playerTeamCollection, auth } from '@/firebase'
 export default {
 
@@ -50,7 +52,12 @@ export default {
         return 'The turn is over';
         }
         else{
-          return 'It is ' + this.activeGame.currentTurn +'\'s turn';
+          if(this.activeGame.currentTurn=='O'){
+            return 'It is your turn';
+          }
+          else{
+            return 'It is the enemy\'s turn';
+          }
         }
       }
       else{
@@ -82,9 +89,50 @@ export default {
     healthPercentage: function(i){
       var percentage;
       percentage = 1 - (this.activeGame.squares[i].value.healthCurrent / this.activeGame.squares[i].value.healthTotal);
-      percentage = percentage + 0.2;
+      percentage = percentage - 0.1;
       return percentage;
-    }
+    },
+    async setCharacterState(myArray){
+      for (let i = 0; i < 9; i++) {
+        var startIndex = 45;
+        //console.log(myArray[i]);
+        var tempArray = myArray[i].split(',');
+        console.log(tempArray[4]);
+        this.activeGame.squares[startIndex+i].value = new Pawn(tempArray[0],'O',tempArray[2],tempArray[4],tempArray[5]);
+      }
+
+    },
+    async setCharacters(){
+      var stateData = await this.getPlayerState();
+      this.setCharacterState(stateData);
+      
+      this.$forceUpdate();
+    },
+    async getPlayerState() {
+      var myArray=[];
+      const querySnapshot = await playerTeamCollection.doc(auth.currentUser.uid).get().then(function(doc) {
+        if (doc.exists) {
+          console.log("Document data:", doc.data());
+          for (let i = 0; i < 9; i++) {
+            myArray.push(doc.data().Troop[i]);
+          }
+        } else {
+          // doc.data() will be undefined in this case
+          console.log("No such document!");
+        }
+        }).catch(function(error) {
+          console.log("Error getting document:", error);
+        });
+      return myArray;
+    },
+
+
+
+
+
+      
+    
+
   }
 }
 </script>

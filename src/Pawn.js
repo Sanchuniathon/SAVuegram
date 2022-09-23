@@ -1,7 +1,7 @@
 export default class Pawn{
-    constructor(id, team, health, characterX, characterY){
+    constructor(name, team, health, characterX, characterY){
         this.team = team;
-        this.id = id;
+        this.name = name;
         this.healthTotal = health;
         this.healthCurrent=health;
         if(this.team == 'X'){ //weak evil guys
