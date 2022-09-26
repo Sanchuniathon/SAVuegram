@@ -53,6 +53,21 @@ const store = new Vuex.Store({
         name: form.name,
         title: form.title
       })
+
+      var choice = form.starter;
+      switch(choice) {
+        case "Sandshrew":
+          choice = "Shrewy,1,3,0.25,-2496,-0";
+          break;
+        case "Mudkip":
+          choice = "Kips,1,3,0.25,-864,-768";
+          break;
+        case "Horsea":
+          choice = "Sploosh,1,3,0.25,-2112,-288";
+          break;
+        default:
+          choice = "Shrewy,1,3,0.25,-2496,-0";
+      }
       await fb.playerTeamCollection.doc(user.uid).set({
         createdOn: new Date(),
         team: form.title,
@@ -61,8 +76,7 @@ const store = new Vuex.Store({
         characters: 0,
         victories: 0,
         Troop: {
-          0: "Jeff,1,10,0.37,-96,-96",
-          1: "Paul,2,11,0.25,0,-96"
+          0: choice
         }
       })
 

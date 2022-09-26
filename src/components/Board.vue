@@ -28,7 +28,7 @@
           </div>
         </div>
         <button :disabled="activeGame.canEndTurn == false" id="end-turn-button" @click="activeGame.completeTurn()">End Turn</button>    
-        <button :disabled="activeGame.canEndTurn == false" id="end-turn-button" @click="setCharacters()">Start</button>     
+        <button :disabled="activeGame.canStartGame == false" id="end-turn-button" @click="setCharacters()">Start</button>     
       </div>
     </section>
 </template>
@@ -37,6 +37,7 @@
 <script>
 import Game from "../Game.js"
 import Pawn from "../Pawn.js"
+import CommentModalVue from "./CommentModal.vue"
 import { playerTeamCollection, auth } from '@/firebase'
 export default {
 
@@ -95,7 +96,6 @@ export default {
     async setCharacterState(myArray){
       for (let i = 0; i < 9; i++) {
         var startIndex = 45;
-        //console.log(myArray[i]);
         var tempArray = myArray[i].split(',');
         console.log(tempArray[4]);
         this.activeGame.squares[startIndex+i].value = new Pawn(tempArray[0],'O',tempArray[2],tempArray[4],tempArray[5]);
@@ -105,6 +105,7 @@ export default {
     async setCharacters(){
       var stateData = await this.getPlayerState();
       this.setCharacterState(stateData);
+      this.activeGame.canStartGame = false;
       
       this.$forceUpdate();
     },

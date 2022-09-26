@@ -31,7 +31,16 @@
           </div>
           <div>
             <label for="title">Team Name</label>
-            <input v-model.trim="signupForm.title" type="text" placeholder="Pew pew" id="title" />
+            <input v-model.trim="signupForm.title" type="text" placeholder="Team Rocket??" id="title" />
+          </div>
+          <div>
+            <label for="starter">Starter</label>
+            <select v-model.trim="signupForm.starter" label="Starter" id="starter" style="margin-bottom:15px">
+              <option value="" disabled selected>Select your starter</option>
+              <option value="Sandshrew">Sandshrew</option>
+              <option value="Mudkip">Mudkip</option>
+              <option value="Horsea">Horsea</option>
+            </select> 
           </div>
           <div>
             <label for="email2">Email</label>
@@ -41,6 +50,7 @@
             <label for="password2">Password</label>
             <input v-model.trim="signupForm.password" type="password" placeholder="min 6 characters" id="password2" />
           </div>
+
           <button @click="signup()" class="button">Sign Up</button>
           <div class="extras">
             <a @click="toggleForm()">Back to Log In</a>
@@ -68,7 +78,8 @@ export default {
         name: '',
         title: '',
         email: '',
-        password: ''
+        password: '',
+        starter: ''
       },
       showLoginForm: true,
       showPasswordReset: false
@@ -92,7 +103,8 @@ export default {
         email: this.signupForm.email,
         password: this.signupForm.password,
         name: this.signupForm.name,
-        title: this.signupForm.title
+        title: this.signupForm.title,
+        starter: this.signupForm.starter
       })
     }
   }

@@ -13,7 +13,7 @@ import { getFirestore, collection, getDocs } from 'firebase/firestore';
 export default class Game {
     constructor() {
         this.inProgress = true;
-        this.canEndTurn = true;
+        this.canStartGame = true;
         this.turnOver = false;
         this.selectionMade = false;
         this.playerTeam = Game.O;
@@ -244,9 +244,6 @@ export default class Game {
         }else{
             //miss, nothing happens
         }
-        //short sleep on the end turn button, needs work and a broader implementation
-        this.canEndTurn=false;  
-        this.sleepFunction(1000).then(() => { this.canEndTurn = true });
     }
 
     makeValidMovement(selectedSquareIndex, i){
