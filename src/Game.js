@@ -30,18 +30,19 @@ export default class Game {
             this.shuffleAI.push(i);
 
         }
+        this.setLevel(0);
         //const q = getTeams(FirebaseDB);
-        var enemyCharacter = [-96,0]; //Ivysaur
-        var friendlyCharacter = [-2496,0]; //sandshrew
-        this.squares[0].value= new Pawn(0,'X',5,0,0);
-        this.squares[1].value= new Pawn(0,'X',5,this.randomCharacter()[0],this.randomCharacter()[1]);
-        this.squares[2].value= new Pawn(0,'X',5,this.randomCharacter()[0],this.randomCharacter()[1]);
-        this.squares[3].value= new Pawn(0,'X',5,this.randomCharacter()[0],this.randomCharacter()[1]);
-        this.squares[4].value= new Pawn(1,'X',5,this.randomCharacter()[0],this.randomCharacter()[1]);
-        this.squares[5].value= new Pawn(0,'X',5,this.randomCharacter()[0],this.randomCharacter()[1]);
-        this.squares[6].value= new Pawn(2,'X',5,this.randomCharacter()[0],this.randomCharacter()[1]);
-        this.squares[7].value= new Pawn(2,'X',5,this.randomCharacter()[0],this.randomCharacter()[1]);
-        this.squares[8].value= new Pawn(2,'X',5,this.randomCharacter()[0],this.randomCharacter()[1]);
+        // var enemyCharacter = [-96,0]; //Ivysaur
+        // var friendlyCharacter = [-2496,0]; //sandshrew
+        // this.squares[0].value= new Pawn(0,'X',5,0,0);
+        // this.squares[1].value= new Pawn(0,'X',5,this.randomCharacter()[0],this.randomCharacter()[1]);
+        // this.squares[2].value= new Pawn(0,'X',5,this.randomCharacter()[0],this.randomCharacter()[1]);
+        // this.squares[3].value= new Pawn(0,'X',5,this.randomCharacter()[0],this.randomCharacter()[1]);
+        // this.squares[4].value= new Pawn(1,'X',5,this.randomCharacter()[0],this.randomCharacter()[1]);
+        // this.squares[5].value= new Pawn(0,'X',5,this.randomCharacter()[0],this.randomCharacter()[1]);
+        // this.squares[6].value= new Pawn(2,'X',5,this.randomCharacter()[0],this.randomCharacter()[1]);
+        // this.squares[7].value= new Pawn(2,'X',5,this.randomCharacter()[0],this.randomCharacter()[1]);
+        // this.squares[8].value= new Pawn(2,'X',5,this.randomCharacter()[0],this.randomCharacter()[1]);
         // this.squares[45].value= new Pawn(3,'O',6,this.randomCharacter()[0],this.randomCharacter()[1]);
         // this.squares[46].value= new Pawn(3,'O',6,this.randomCharacter()[0],this.randomCharacter()[1]);
         // this.squares[47].value= new Pawn(3,'O',6,this.randomCharacter()[0],this.randomCharacter()[1]);
@@ -287,7 +288,20 @@ export default class Game {
         
     }
 
-
+    setLevel(level){
+        var evilCaterpie = new Pawn(0,'X',1,"-864","-0");
+        var evilCaterpie2 = new Pawn(0,'X',1,"-864","-0");
+        var evilCaterpie3 = new Pawn(0,'X',1,"-864","-0");
+        var levelArray = [
+            [evilCaterpie,evilCaterpie2],
+            [evilCaterpie,evilCaterpie2,evilCaterpie3]
+        ]
+        for (let i = 0; i < levelArray[level].length; i++) {
+            var startIndex = 0;
+            console.log("adding caterpie at " + (startIndex+i));
+            this.squares[startIndex+i].value = levelArray[level][i];
+        }
+    }
     //Core game engine method handling almost every in grid action
     makeMove(i){
 

@@ -107,6 +107,7 @@ export default {
       this.setCharacterState(stateData);
       this.activeGame.canStartGame = false;
       
+      
       this.$forceUpdate();
     },
     async getPlayerState() {
