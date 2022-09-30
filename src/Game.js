@@ -31,25 +31,6 @@ export default class Game {
 
         }
         this.setLevel(0);
-        //const q = getTeams(FirebaseDB);
-        // var enemyCharacter = [-96,0]; //Ivysaur
-        // var friendlyCharacter = [-2496,0]; //sandshrew
-        // this.squares[0].value= new Pawn(0,'X',5,0,0);
-        // this.squares[1].value= new Pawn(0,'X',5,this.randomCharacter()[0],this.randomCharacter()[1]);
-        // this.squares[2].value= new Pawn(0,'X',5,this.randomCharacter()[0],this.randomCharacter()[1]);
-        // this.squares[3].value= new Pawn(0,'X',5,this.randomCharacter()[0],this.randomCharacter()[1]);
-        // this.squares[4].value= new Pawn(1,'X',5,this.randomCharacter()[0],this.randomCharacter()[1]);
-        // this.squares[5].value= new Pawn(0,'X',5,this.randomCharacter()[0],this.randomCharacter()[1]);
-        // this.squares[6].value= new Pawn(2,'X',5,this.randomCharacter()[0],this.randomCharacter()[1]);
-        // this.squares[7].value= new Pawn(2,'X',5,this.randomCharacter()[0],this.randomCharacter()[1]);
-        // this.squares[8].value= new Pawn(2,'X',5,this.randomCharacter()[0],this.randomCharacter()[1]);
-        // this.squares[45].value= new Pawn(3,'O',6,this.randomCharacter()[0],this.randomCharacter()[1]);
-        // this.squares[46].value= new Pawn(3,'O',6,this.randomCharacter()[0],this.randomCharacter()[1]);
-        // this.squares[47].value= new Pawn(3,'O',6,this.randomCharacter()[0],this.randomCharacter()[1]);
-        // this.squares[48].value= new Pawn(3,'O',6,this.randomCharacter()[0],this.randomCharacter()[1]);
-        // this.squares[49].value= new Pawn(4,'O',6,this.randomCharacter()[0],this.randomCharacter()[1]);
-        // this.squares[52].value= new Pawn(5,'O',6,this.randomCharacter()[0],this.randomCharacter()[1]);
-
     }
     randomCharacter(){
         var returnArray = [0,0]
@@ -140,6 +121,25 @@ export default class Game {
     }
     //This method returns true if the destination (i) is one fundamental block away from the selected character(s) position (selectedSquareIndex) not counting diagonals
     isSquareAdjacent(selectedSquareIndex, i){
+
+        //we can deploy into any of the first rows
+        if(selectedSquareIndex<=8){ //top deployment row
+            if((i>=9)&&(i<=17)){
+                return true;
+            }
+            else{
+                return false; //it isn't the row adjacent to the deployment row
+            }
+        }
+        else if(selectedSquareIndex>=45){//bottom deployment row
+            if((i>=36)&&(i<=44)){
+                return true;
+            }
+            else{
+                return false; //it isn't the row adjacent to the deployment row
+            }
+        }
+
         var checkLocation = (selectedSquareIndex - i);
         //Can't move within the same square
         var refinedPosition = this.getPositionInFundamentalBlock(selectedSquareIndex);
@@ -289,12 +289,13 @@ export default class Game {
     }
 
     setLevel(level){
+        var blank = new Pawn("","","");
         var evilCaterpie = new Pawn(0,'X',1,"-864","-0");
         var evilCaterpie2 = new Pawn(0,'X',1,"-864","-0");
         var evilCaterpie3 = new Pawn(0,'X',1,"-864","-0");
         var levelArray = [
-            [evilCaterpie,evilCaterpie2],
-            [evilCaterpie,evilCaterpie2,evilCaterpie3]
+            [blank,blank,blank,evilCaterpie,evilCaterpie2],
+            [blank,blank,blank,evilCaterpie,evilCaterpie2,evilCaterpie3]
         ]
         for (let i = 0; i < levelArray[level].length; i++) {
             var startIndex = 0;
@@ -407,6 +408,9 @@ export default class Game {
         }
         if((!xAlive)||(!oAlive)){
             this.inProgress = false;
+            if(!xAlive){
+                this.setLevel(1);
+            }
         }
             
 

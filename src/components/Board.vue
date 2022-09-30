@@ -23,7 +23,7 @@
               'background-position-y':characterIconY(i)+'px',
               'filter': 'grayscale('+healthPercentage(i)+')'
               }">
-              {{square.value.healthCurrent}}
+              {{square.value.healthCurrent + i}}
             </div>
           </div>
         </div>
